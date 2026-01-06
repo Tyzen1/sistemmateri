@@ -11,41 +11,27 @@ if ($method === 'GET' && $action === 'get') {
     $semester = $_GET['semester'] ?? '';
     $bab = $_GET['bab'] ?? '';
     $sub = $_GET['sub'] ?? '';
-    
-    // Parameter tambahan untuk Mahasiswa (Filter Sesi) dan Dosen (Filter Author)
     $sesi = $_GET['sesi'] ?? ''; 
-    $author = $_GET['author'] ?? '';
 
     $sql = "SELECT * FROM materials WHERE 1=1";
     
     // Filter Prodi
     if ($prodi != '') { $sql .= " AND prodi LIKE ?"; }
-    
-    // Filter Semester (Single Select, tapi disimpan string di DB, tapi pencarian pakai LIKE)
+    // Filter Semester
     if ($semester != '') { $sql .= " AND semester LIKE ?"; }
-
-    // FILTER SESI KHUSUS UNTUK MAHASISWA (Hanya lihat sesinya sendiri)
-    if ($sesi != '') {
-        $sql .= " AND sesi LIKE ?";
-    }
-    
-    // Filter Bab
+    // Filter Sesi
+    if ($sesi != '') { $sql .= " AND sesi LIKE ?"; }
+    // Filter Bab/Sub
     if ($bab != '') { $sql .= " AND bab LIKE ?"; }
     if ($sub != '') { $sql .= " AND subbab LIKE ?"; }
 
-    // Filter Author (Dosen)
-    if ($author != '') {
-        $sql .= " AND author_name = ?";
-    }
-
-    // Bind params dinamis
+    // Bind Params
     $types = "";
     $params = [];
     
     if ($prodi != '') { $types .= "s"; $params[] = "%$prodi%"; }
     if ($semester != '') { $types .= "s"; $params[] = "%$semester%"; }
-    if ($sesi != '') { $types .= "s"; $params[] = "%$sesi%"; } // Filter Sesi
-    if ($author != '') { $types .= "s"; $params[] = $author; }
+    if ($sesi != '') { $types .= "s"; $params[] = "%$sesi%"; }
     if ($bab != '') { $types .= "s"; $params[] = "%$bab%"; }
     if ($sub != '') { $types .= "s"; $params[] = "%$sub%"; }
 
@@ -63,27 +49,33 @@ if ($method === 'GET' && $action === 'get') {
     echo json_encode($data);
 }
 
-// 2. TAMBAH MATERI (POST)
+// 2. TAMBAH MATERI
 elseif ($method === 'POST' && $action === 'add') {
-    $data = json_decode(file_get_contents("php://input"), true);
+    $rawInput = file_get_contents("php://input");
+    if(!$rawInput) { echo json_encode(["status" => "error", "message" => "No Input"]); exit; }
+    $data = json_decode($rawInput, true);
     
-    // Kolom sesi harus ada di SQL
+    $prodi = isset($data['prodi']) ? $data['prodi'] : '';
+    $semester = isset($data['semester']) ? $data['semester'] : '';
+    $sesi = isset($data['sesi']) ? $data['sesi'] : '';
+    $bab = isset($data['bab']) ? $data['bab'] : '';
+    $subbab = isset($data['subbab']) ? $data['subbab'] : '';
+    $file = isset($data['file']) ? $data['file'] : '';
+    $author = isset($data['author']) ? $data['author'] : '';
+
+    // PERBAIKAN: Jumlah parameter bind harus sesuai (7 placeholder)
     $sql = "INSERT INTO materials (prodi, semester, sesi, bab, subbab, file_url, author_name) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
-    // Sesuaikan bind_param: "sissssss"
-    // s (String) untuk prodi, semester (jika string), sesi, bab, subbab, file, author.
-    // Catatan: Jika DB Anda 'semester' adalah INT, dan value dari HTML string "1",
-    // PHP biasanya bisa mengubah otomatis "1" ke 1 saat bind string.
-    // Tapi jika Anda mengubah DB semester menjadi VARCHAR untuk multi-select, gunakan s.
-    $stmt->bind_param("sissssss", 
-        $data['prodi'], 
-        $data['semester'], 
-        $data['sesi'], // <--- KUNCI: Pastikan ini ada
-        $data['bab'], 
-        $data['subbab'], 
-        $data['file'], 
-        $data['author']
+    // PERBAIKAN: bind_param tipe string 'sssssss' (7 string)
+    $stmt->bind_param("sssssss", 
+        $prodi, 
+        $semester, 
+        $sesi, 
+        $bab, 
+        $subbab, 
+        $file, 
+        $author
     );
     
     if ($stmt->execute()) {
@@ -96,10 +88,13 @@ elseif ($method === 'POST' && $action === 'add') {
 // 3. HAPUS MATERI
 elseif ($method === 'POST' && $action === 'delete') {
     $data = json_decode(file_get_contents("php://input"), true);
-    // Keamanan: Cek pemilik
+    
+    // PERBAIKAN: Ambil author dari JSON body yang dikirim JS
+    $author = isset($data['author']) ? $data['author'] : '';
+    
     $checkSql = "SELECT id FROM materials WHERE id = ? AND author_name = ?";
     $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bind_param("is", $data['id'], $data['author']);
+    $checkStmt->bind_param("is", $data['id'], $author);
     $checkStmt->execute();
     $checkResult = $checkStmt->get_result();
 
@@ -110,7 +105,7 @@ elseif ($method === 'POST' && $action === 'delete') {
         $stmt->execute();
         echo json_encode(["status" => "success"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Anda tidak punya akses menghapus materi ini!"]);
+        echo json_encode(["status" => "error", "message" => "Akses Ditolak"]);
     }
 }
 
@@ -118,18 +113,21 @@ elseif ($method === 'POST' && $action === 'delete') {
 elseif ($method === 'POST' && $action === 'edit') {
     $data = json_decode(file_get_contents("php://input"), true);
     
-    // Keamanan: Cek pemilik
+    // PERBAIKAN: Ambil author
+    $author = isset($data['author']) ? $data['author'] : '';
+
     $checkSql = "SELECT id FROM materials WHERE id = ? AND author_name = ?";
     $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bind_param("is", $data['id'], $data['author']);
+    $checkStmt->bind_param("is", $data['id'], $author);
     $checkStmt->execute();
     $checkResult = $checkStmt->get_result();
 
     if ($checkResult->num_rows > 0) {
-        // Update (Sesi String, Semester Int)
+        // PERBAIKAN: Jumlah parameter bind (6 update + 1 where = 7)
         $sql = "UPDATE materials SET prodi=?, semester=?, sesi=?, bab=?, subbab=?, file_url=? WHERE id=?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sissssi", 
+        // PERBAIKAN: Tipe data 'ssssssi' (6 string, 1 integer untuk ID)
+        $stmt->bind_param("ssssssi", 
             $data['prodi'], 
             $data['semester'], 
             $data['sesi'], 
@@ -141,7 +139,7 @@ elseif ($method === 'POST' && $action === 'edit') {
         $stmt->execute();
         echo json_encode(["status" => "success"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Anda tidak punya akses mengedit materi ini!"]);
+        echo json_encode(["status" => "error", "message" => "Akses Ditolak"]);
     }
 }
 ?>
