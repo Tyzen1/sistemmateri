@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SI Materi Kuliah - Sesi Terintegrasi</title>
+    <title>SI Materi Kuliah - Final Fix</title>
     <style>
-        /* --- CSS VARIABLES & THEME (TERANG) --- */
+        /* --- CSS VARIABLES --- */
         :root {
             --primary: #2563eb;
             --primary-dark: #1e40af;
@@ -54,6 +54,7 @@
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-outline { border: 1px solid var(--secondary); background: transparent; color: var(--secondary); }
         .btn-success { background: var(--success); color: white; }
+        .btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; opacity: 0.7; }
 
         .form-group { margin-bottom: 20px; position: relative; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; margin-left: 5px; transition: 0.3s; }
@@ -73,141 +74,60 @@
             transform: translateY(-2px);
             background: #fff;
         }
-        .form-group:focus-within label { color: var(--primary); transform: translateX(5px); }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* --- AUTH CARD --- */
-        .auth-container {
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
-            perspective: 1000px;
-        }
+        .auth-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; perspective: 1000px; }
         .auth-card {
             background: white; padding: 45px; border-radius: 24px; box-shadow: var(--shadow-lg);
             width: 100%; max-width: 450px; border: 1px solid rgba(0,0,0,0.05);
-            animation: fadeInUp 0.8s var(--anim-curve) forwards;
-            opacity: 0;
+            animation: fadeInUp 0.8s var(--anim-curve) forwards; opacity: 0;
         }
-        
-        .role-switch {
-            display: flex; background: #f1f5f9; padding: 6px; border-radius: 12px; margin-bottom: 25px;
-        }
-        .role-btn {
-            flex: 1; text-align: center; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--secondary); transition: all 0.4s var(--anim-curve);
-        }
-        .role-btn.active { 
-            background: white; color: var(--primary); 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-            transform: scale(1.05);
-        }
+        .role-switch { display: flex; background: #f1f5f9; padding: 6px; border-radius: 12px; margin-bottom: 25px; }
+        .role-btn { flex: 1; text-align: center; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--secondary); transition: all 0.4s var(--anim-curve); }
+        .role-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transform: scale(1.05); }
 
-        /* --- DASHBOARD (TERANG ONLY) --- */
-        .dashboard-wrapper { display: flex; flex-direction: column; min-height: 100vh; background: linear-gradient(135deg, #e0f2fe 0%, #f1f5f9 100%); /* Warna Sesi Pagi Terapkan Global */ }
-        .navbar {
-            background: white; padding: 15px 30px; box-shadow: var(--shadow-sm);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100;
-        }
+        /* --- DASHBOARD --- */
+        .dashboard-wrapper { display: flex; flex-direction: column; min-height: 100vh; background: #f1f5f9; }
+        .navbar { background: white; padding: 15px 30px; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .main-content { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; flex: 1; }
         
-        .section-about {
-            background: white; padding: 30px; border-radius: 24px; margin-bottom: 40px;
-            border-left: 6px solid var(--success); box-shadow: var(--shadow-sm);
-            animation: fadeInUp 0.8s 0.2s forwards; opacity: 0;
-        }
-
-        .filter-bar {
-            background: white; padding: 25px; border-radius: 24px; margin-bottom: 40px;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;
-            box-shadow: var(--shadow-sm);
-            animation: fadeInUp 0.8s 0.3s forwards; opacity: 0;
-        }
-
-        .material-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;
-        }
-        .material-card {
-            background: white; border-radius: 24px; padding: 25px;
-            box-shadow: var(--shadow-sm); transition: all 0.4s var(--anim-curve);
-            border-top: 5px solid var(--primary); position: relative;
-            opacity: 0; animation: popIn 0.6s forwards;
-        }
+        .section-about { background: white; padding: 30px; border-radius: 24px; margin-bottom: 40px; border-left: 6px solid var(--success); box-shadow: var(--shadow-sm); animation: fadeInUp 0.8s 0.2s forwards; opacity: 0; }
+        .filter-bar { background: white; padding: 25px; border-radius: 24px; margin-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; box-shadow: var(--shadow-sm); animation: fadeInUp 0.8s 0.3s forwards; opacity: 0; }
+        .material-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        .material-card { background: white; border-radius: 24px; padding: 25px; box-shadow: var(--shadow-sm); transition: all 0.4s var(--anim-curve); border-top: 5px solid var(--primary); position: relative; opacity: 0; animation: popIn 0.6s forwards; }
         .material-card:hover { transform: translateY(-10px) scale(1.02); z-index: 10; }
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 1000;
-            display: flex; justify-content: center; align-items: center;
-            backdrop-filter: blur(4px); animation: fadeIn 0.3s ease;
-        }
-        .modal-content {
-            background: white; padding: 40px; border-radius: 24px; width: 100%; max-width: 600px;
-            max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg);
-            animation: popIn 0.4s var(--anim-curve) forwards;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(4px); animation: fadeIn 0.3s ease; }
+        .modal-content { background: white; padding: 40px; border-radius: 24px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: popIn 0.4s var(--anim-curve) forwards; }
 
-        .profile-widget { 
-            display: flex; align-items: center; gap: 12px; cursor: pointer; 
-            padding: 8px 16px; border-radius: 50px; transition: 0.3s; background: #f8fafc;
-        }
-        .profile-widget:hover { 
-            background: white; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-            transform: scale(1.02); 
-        }
-        .avatar { 
-            width: 45px; height: 45px; border-radius: 50%; object-fit: cover; 
-            border: 3px solid var(--primary); transition: 0.4s var(--anim-curve);
-        }
+        .profile-widget { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px 16px; border-radius: 50px; transition: 0.3s; background: #f8fafc; }
+        .profile-widget:hover { background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transform: scale(1.02); }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); transition: 0.4s var(--anim-curve); }
         .profile-widget:hover .avatar { transform: rotate(10deg) scale(1.1); }
+
+        /* --- MOBILE CHIPS UI --- */
+        .multi-select-container { border: 2px solid #e2e8f0; border-radius: var(--radius); padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; background: white; min-height: 50px; }
+        .select-chip { padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; user-select: none; }
+        .select-chip.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+        .select-chip.disabled { background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; cursor: not-allowed; opacity: 0.8; pointer-events: none; }
+        .select-chip:hover:not(.disabled):not(.active) { background: #eff6ff; }
 
         /* TOAST */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
-        .toast { 
-            padding: 16px 24px; background: white; border-radius: 12px; 
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
-            border-left: 6px solid var(--primary); 
-            animation: slideRight 0.5s var(--anim-curve) forwards; 
-            min-width: 300px; font-weight: 500;
-        }
-
-        /* --- MOBILE MULTI-SELECT UI (CHIPS) --- */
-        .multi-select-container { 
-            border: 2px solid #e2e8f0; border-radius: var(--radius); padding: 10px; 
-            display: flex; flex-wrap: wrap; gap: 8px; background: white; 
-            min-height: 50px;
-        }
-        .select-chip {
-            padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 20px; 
-            font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
-            user-select: none;
-        }
-        .select-chip.active {
-            background: var(--primary); color: white; border-color: var(--primary); 
-            font-weight: 600;
-        }
-        .select-chip:hover { background: #eff6ff; }
+        .toast { padding: 16px 24px; background: white; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-left: 6px solid var(--primary); animation: slideRight 0.5s var(--anim-curve) forwards; min-width: 300px; font-weight: 500; }
 
         /* RESPONSIVE */
         @media screen and (max-width: 768px) {
             .navbar { flex-direction: column; padding: 15px; gap: 15px; position: relative; }
             .nav-left, .nav-right { width: 100%; display: flex; justify-content: center; flex-wrap: wrap; }
-            .nav-left { order: 2; margin-bottom: 10px; }
-            .nav-right { order: 1; margin-bottom: 20px; }
+            .nav-left { order: 2; }
+            .nav-right { order: 1; }
             .profile-widget { width: 100%; justify-content: center; background: white; border: 1px solid #e2e8f0; padding: 10px; }
             .main-content { padding: 20px 15px; }
             .filter-bar { display: flex; flex-direction: column; padding: 20px; gap: 15px; }
@@ -220,24 +140,23 @@
 </head>
 <body>
 
+    <!-- TOAST -->
     <div id="toast-container"></div>
 
-    <!-- HALAMAN LOGIN -->
+    <!-- LOGIN -->
     <div id="auth-view" class="auth-container">
         <div class="auth-card">
             <div class="auth-header" style="text-align: center; margin-bottom: 30px;">
                 <h2 style="color: var(--primary); font-size: 2rem;">SI Materi Kuliah</h2>
                 <p style="color: var(--secondary);">Masuk ke akun Anda</p>
             </div>
-            
             <div class="role-switch">
                 <div class="role-btn active" onclick="switchRole('mahasiswa')">Mahasiswa</div>
                 <div class="role-btn" onclick="switchRole('dosen')">Dosen</div>
             </div>
-
             <form id="login-form" onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label id="label-id">NPM / NIDN</label>
+                    <label id="label-id">NPM</label>
                     <input type="text" id="input-id" class="form-control" placeholder="Masukkan ID Anda" required>
                 </div>
                 <div class="form-group">
@@ -246,14 +165,13 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Masuk</button>
             </form>
-            
             <div style="margin-top: 25px; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 20px;">
                 <a href="#" onclick="openResetModal()" style="color: var(--primary); text-decoration: none; font-weight: 700; font-size: 0.9rem;">Lupa Sandi ?</a>
             </div>
         </div>
     </div>
 
-    <!-- MODAL RESET PASSWORD -->
+    <!-- MODAL RESET -->
     <div id="modal-reset" class="modal-overlay hidden">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
@@ -281,7 +199,7 @@
         </div>
     </div>
 
-    <!-- DASHBOARD UTAMA (SINGLE VIEW) -->
+    <!-- DASHBOARD UTAMA -->
     <div id="dashboard-view" class="dashboard-wrapper hidden">
         <header class="navbar">
             <div class="nav-left">
@@ -294,29 +212,33 @@
                     </div>
                 </div>
             </div>
-            <div class="nav-right">
-                <button class="btn btn-outline" onclick="alert('Hubungi: +62 812-3456-7890')">Contact Us</button>
+            <div class="nav-right" style="display: flex; gap: 15px; align-items: center;">
+                <button class="btn btn-outline" onclick="alert('Contact')">Contact Us</button>
                 <button class="btn btn-danger" onclick="window.location.reload()">Logout</button>
             </div>
         </header>
 
         <main class="main-content">
             <section class="section-about">
-                <h3 id="page-title" style="color: var(--primary); margin-bottom: 10px;">Selamat Datang</h3>
-                <p id="page-desc" style="color: var(--secondary);">Silakan akses materi perkuliahan.</p>
+                <h3 id="page-title" style="color: var(--primary);">Selamat Datang</h3>
+                <p id="page-desc" style="color: var(--secondary);">Akses materi perkuliahan.</p>
             </section>
 
             <!-- FILTER BAR -->
             <section class="filter-bar">
-                <!-- PROGRAM STUDI: MULTI-SELECT MOBILE FRIENDLY -->
-                <div class="form-group" style="margin:0;">
+                <!-- 1. Program Studi (Wajib ada di HTML, disembunyikan via JS) -->
+                <div id="filter-prodi-wrapper" class="form-group" style="margin:0;">
                     <label>Program Studi</label>
-                    <!-- Desktop Standard Dropdown, Mobile Chips will replace this via JS? No, let's use Chips everywhere for simplicity requested -->
-                    <div id="filter-prodi-container" class="multi-select-container">
-                        <!-- JS Inject -->
-                    </div>
+                    <div id="filter-prodi-container" class="multi-select-container"></div>
                 </div>
 
+                <!-- 2. Sesi Belajar (Disembunyikan via JS jika diperlukan, tapi default Hidden di HTML) -->
+                <div id="filter-sesi-wrapper" class="form-group hidden" style="margin:0;">
+                    <label>Sesi Belajar</label>
+                    <div id="filter-sesi-container" class="multi-select-container"></div>
+                </div>
+
+                <!-- 3. Semester (Dropdown) -->
                 <div class="form-group" style="margin:0;">
                     <label>Semester</label>
                     <select id="filter-semester" class="form-control" onchange="fetchMaterials()">
@@ -332,21 +254,23 @@
                     </select>
                 </div>
 
+                <!-- 4. FITUR PENCARI BAB (Fixed) -->
                 <div class="form-group" style="margin:0;">
                     <label>Bab</label>
-                    <input type="text" id="filter-bab" class="form-control" placeholder="Cari Bab..." onkeyup="fetchMaterials()">
+                    <input type="text" id="filter-bab" class="form-control" placeholder="Ketik Bab..." onkeyup="fetchMaterials()">
                 </div>
 
+                <!-- 5. FITUR PENCARI SUB-BAB (Fixed) -->
                 <div class="form-group" style="margin:0;">
                     <label>Sub-bab</label>
                     <input type="text" id="filter-subbab" class="form-control" placeholder="Cari judul..." onkeyup="fetchMaterials()">
                 </div>
 
-                <div id="action-add-container" class="hidden" style="display:flex; align-items:end;">
+                <!-- 6. TOMBOL TAMBAH (Fixed) -->
+                <div id="action-add-container" class="form-group" style="display:flex; align-items:end; margin:0;">
                     <button class="btn btn-primary" style="width: 100%;" onclick="openMaterialModal()">+ Tambah Materi</button>
                 </div>
             </section>
-
             <section id="material-list" class="material-grid"></section>
         </main>
     </div>
@@ -358,48 +282,39 @@
                 <h2 style="color: var(--accent);">Profil Akademik</h2>
                 <button class="btn btn-secondary" onclick="closeModal('modal-profile')">X</button>
             </div>
-            
             <div style="text-align: center; margin-bottom: 30px;">
                 <img id="modal-avatar" src="" class="avatar" style="width: 120px; height: 120px; border-width: 4px; cursor: pointer;" onclick="document.getElementById('upload-avatar').click()">
                 <br><br>
                 <input type="file" id="upload-avatar" class="hidden" accept="image/*" onchange="changeAvatar(this)">
                 <button class="btn btn-outline" style="font-size:0.9rem;">Ubah Foto</button>
-                <p style="font-size: 0.8rem; color: var(--secondary); margin-top: 10px;">*Foto akan disimpan otomatis.</p>
+                <p style="font-size: 0.8rem; color: var(--secondary);">*Foto tersimpan otomatis.</p>
             </div>
-
             <div class="profile-detail-view">
                 <div class="profile-detail-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
                     <span class="profile-detail-label" style="font-weight: 700; color: var(--secondary);">Nama Lengkap</span>
                     <span id="p-nama" class="profile-detail-value" contenteditable="true" style="border-bottom: 1px dashed #cbd5e1; padding: 2px 5px; border-radius: 4px; cursor: text;"></span>
                 </div>
                 <div class="profile-detail-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
-                    <span class="profile-detail-label" style="font-weight: 700; color: var(--secondary);">ID (NPM/NIDN)</span>
+                    <span class="profile-detail-label" style="font-weight: 700; color: var(--secondary);">ID</span>
                     <span id="p-id" class="profile-detail-value" contenteditable="false" style="color: #94a3b8; font-weight: 600;"></span>
                 </div>
-                
                 <div class="profile-detail-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
                     <span class="profile-detail-label" style="font-weight: 700; color: var(--secondary);">Nama Institusi</span>
                     <span id="p-instansi" class="profile-detail-value" contenteditable="true" style="border-bottom: 1px dashed #cbd5e1; padding: 2px 5px; border-radius: 4px; cursor: text;">-</span>
                 </div>
-
-                <!-- Khusus MAHASISWA -->
                 <div id="row-sesi" class="profile-detail-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
                     <span class="profile-detail-label" style="font-weight: 700; color: var(--secondary);">Sesi Belajar</span>
-                    <!-- PERMANEN & TIDAK BISA DIUBAH -->
                     <span id="p-sesi" class="profile-detail-value" style="background: #f1f5f9; padding: 2px 10px; border-radius: 6px; color: #64748b; font-weight: 600;">-</span>
                 </div>
-
                 <div id="row-prodi" class="profile-detail-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
                     <span class="profile-detail-label" style="font-weight: 700; color: var(--secondary);">Program Studi</span>
-                    <span id="p-prodi" class="profile-detail-value" contenteditable="true" style="border-bottom: 1px dashed #cbd5e1; padding: 2px 5px; border-radius: 4px; cursor: text;">-</span>
+                    <span id="p-prodi" class="profile-detail-value" style="background: #f1f5f9; padding: 2px 10px; border-radius: 6px; color: #64748b; font-weight: 600;">-</span>
                 </div>
-
                 <div id="row-dosen" class="profile-detail-row" style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
                     <span class="profile-detail-label" style="font-weight: 700; color: var(--secondary);">Pembimbing Akademik</span>
                     <span id="p-dosen" class="profile-detail-value" contenteditable="true" style="border-bottom: 1px dashed #cbd5e1; padding: 2px 5px; border-radius: 4px; cursor: text;">-</span>
                 </div>
             </div>
-            
             <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; color: var(--secondary); font-size: 0.85rem;">
                 *Klik pada teks data untuk mengubahnya.
             </div>
@@ -416,24 +331,14 @@
             </div>
             <form onsubmit="handleMaterialSubmit(event)">
                 <input type="hidden" id="mat-id">
-                
-                <!-- PROGRAM STUDI: MULTI-SELECT (CHIPS UI) -->
                 <div class="form-group">
-                    <label>Program Studi (Klik untuk Pilih)</label>
-                    <div id="mat-prodi-container" class="multi-select-container">
-                        <!-- JS Inject Chips -->
-                    </div>
+                    <label>Program Studi</label>
+                    <div id="mat-prodi-container" class="multi-select-container"></div>
                 </div>
-
-                <!-- SESI BELAJAR: MULTI-SELECT (CHIPS UI) -->
                 <div class="form-group">
-                    <label>Sesi Belajar (Klik untuk Pilih)</label>
-                    <div id="mat-sesi-container" class="multi-select-container">
-                        <!-- JS Inject Chips -->
-                    </div>
+                    <label>Sesi Belajar</label>
+                    <div id="mat-sesi-container" class="multi-select-container"></div>
                 </div>
-
-                <!-- SEMESTER: SINGLE SELECT -->
                 <div class="form-group">
                     <label>Semester</label>
                     <select id="mat-semester" class="form-control" required>
@@ -447,14 +352,13 @@
                         <option value="8">Semester 8</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>Bab</label>
-                    <input type="text" id="mat-bab" class="form-control" placeholder="Contoh: Bab 1 - Dasar" required>
+                    <input type="text" id="mat-bab" class="form-control" placeholder="Contoh: Bab 1" required>
                 </div>
                 <div class="form-group">
                     <label>Judul / Sub-bab</label>
-                    <input type="text" id="mat-subbab" class="form-control" placeholder="Contoh: Pengenalan Algoritma" required>
+                    <input type="text" id="mat-subbab" class="form-control" placeholder="Contoh: Algoritma" required>
                 </div>
                 <div class="form-group">
                     <label>Link File (URL)</label>
@@ -466,11 +370,9 @@
     </div>
 
     <script>
-        // --- GLOBAL VARIABLES ---
         let currentUser = null;
         let currentRole = 'mahasiswa';
         
-        // Data Opsi untuk Chips (Program Studi & Sesi)
         const prodiOptions = [
             { val: 'Informatika', label: 'Informatika' },
             { val: 'Sistem Informasi', label: 'Sistem Informasi' },
@@ -486,63 +388,61 @@
             initChips();
         });
 
-        // --- INISIALISASI CHIPS (MOBILE MULTI-SELECT) ---
+        // --- CHIPS UI ---
         function initChips() {
-            // 1. Filter Prodi Chips
-            const filterProdiContainer = document.getElementById('filter-prodi-container');
-            // Inject Chips Filter
-            prodiOptions.forEach(opt => {
-                const chip = createChip(opt.label, opt.val, 'filter-prodi');
-                filterProdiContainer.appendChild(chip);
-            });
-            // Inject Chips Modal Materi
-            const matProdiContainer = document.getElementById('mat-prodi-container');
-            prodiOptions.forEach(opt => {
-                const chip = createChip(opt.label, opt.val, 'mat-prodi');
-                matProdiContainer.appendChild(chip);
-            });
-
-            // 2. Filter Sesi Chips (Hanya untuk Mahasiswa) - Hapus jika Dosen di JS nanti
-            const filterSesiContainer = document.getElementById('filter-sesi-container');
-            if(filterSesiContainer) {
-                sesiOptions.forEach(opt => {
-                    const chip = createChip(opt.label, opt.val, 'filter-sesi');
-                    filterSesiContainer.appendChild(chip);
+            // Filter Prodi
+            const filterProdi = document.getElementById('filter-prodi-container');
+            if(filterProdi) {
+                prodiOptions.forEach(opt => {
+                    const chip = createChip(opt.label, opt.val, 'filter-prodi');
+                    filterProdi.appendChild(chip);
                 });
             }
-
-            // 3. Materi Sesi Chips
-            const matSesiContainer = document.getElementById('mat-sesi-container');
-            sesiOptions.forEach(opt => {
-                const chip = createChip(opt.label, opt.val, 'mat-sesi');
-                matSesiContainer.appendChild(chip);
-            });
+            // Mat Prodi
+            const matProdi = document.getElementById('mat-prodi-container');
+            if(matProdi) {
+                prodiOptions.forEach(opt => {
+                    const chip = createChip(opt.label, opt.val, 'mat-prodi');
+                    matProdi.appendChild(chip);
+                });
+            }
+            // Filter Sesi (Default Hidden di HTML)
+            const filterSesi = document.getElementById('filter-sesi-container');
+            if(filterSesi) {
+                sesiOptions.forEach(opt => {
+                    const chip = createChip(opt.label, opt.val, 'filter-sesi');
+                    filterSesi.appendChild(chip);
+                });
+            }
+            // Mat Sesi
+            const matSesi = document.getElementById('mat-sesi-container');
+            if(matSesi) {
+                sesiOptions.forEach(opt => {
+                    const chip = createChip(opt.label, opt.val, 'mat-sesi');
+                    matSesi.appendChild(chip);
+                });
+            }
         }
 
-        // Fungsi Helper untuk membuat elemen Chip
         function createChip(text, value, containerId) {
             const chip = document.createElement('div');
             chip.className = 'select-chip';
             chip.innerText = text;
-            chip.dataset.value = value;
-            chip.dataset.container = containerId; // Simpan ID wadahnya
-            chip.onclick = function() { toggleChip(this); };
+            chip.dataset.val = value;
+            chip.dataset.container = containerId;
+            chip.onclick = function() { toggleChip(this); fetchMaterials(); };
             return chip;
         }
 
-        // Fungsi Klik Chip
         function toggleChip(element) {
             element.classList.toggle('active');
         }
 
-        // Fungsi Ambil Value dari Chips (Kembalikan String Koma)
-                // Fungsi Helper untuk ambil value dari Chips
         function getSelectedValues(containerId) {
             const container = document.getElementById(containerId);
             if(!container) return '';
-            
             const activeChips = container.querySelectorAll('.select-chip.active');
-            return Array.from(activeChips).map(c => c.dataset.value).join(',');
+            return Array.from(activeChips).map(c => c.dataset.val).join(',');
         }
 
         // --- NOTIFICATIONS ---
@@ -553,7 +453,6 @@
             let icon = '';
             if(type === 'success') icon = '✅ ';
             if(type === 'error') icon = '❌ ';
-            if(type === 'info') icon = 'ℹ️ ';
             toast.innerHTML = `<span>${icon}${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => { 
@@ -563,7 +462,7 @@
             }, 3000);
         }
 
-        // --- LOGIN LOGIC ---
+        // --- LOGIN ---
         function switchRole(role) {
             currentRole = role;
             document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
@@ -593,66 +492,36 @@
                     document.getElementById('nav-name').innerText = currentUser.nama_lengkap;
                     document.getElementById('nav-role').innerText = currentUser.role;
                     document.getElementById('nav-avatar').src = currentUser.avatar;
-                    
-                    // --- SETUP UI BERDASARKAN ROLE ---
+
+                    const addBtnContainer = document.getElementById('action-add-container');
+                    const prodiFilterWrapper = document.getElementById('filter-prodi-wrapper');
+                    const sesiFilterWrapper = document.getElementById('filter-sesi-wrapper');
+
                     if (currentUser.role === 'dosen') {
-                        // Dosen: Tampilkan Filter Sesi dan Prodi
-                        document.getElementById('action-add-container').classList.remove('hidden');
-                        document.getElementById('action-add-container').style.display = 'flex';
+                        // DOSEN: Buka tombol tambah, Buka Prodi, Buka Sesi
+                        if(addBtnContainer) addBtnContainer.classList.remove('hidden');
+                        if(addBtnContainer) addBtnContainer.style.display = 'flex';
                         
-                        // Inject Chips Prodi ke Filter Bar jika belum ada (karena HTML kita hapus untuk bersih)
-                        const filterBar = document.querySelector('.filter-bar');
-                        if(!document.getElementById('filter-prodi-container')) {
-                            const prodiDiv = document.createElement('div');
-                            prodiDiv.className = 'form-group';
-                            prodiDiv.style.margin = '0';
-                            prodiDiv.innerHTML = `<label>Program Studi</label><div id="filter-prodi-container" class="multi-select-container"></div>`;
-                            // Sisipkan sebelum Bab
-                            const babInput = document.getElementById('filter-bab');
-                            babInput.parentNode.insertBefore(prodiDiv, babInput);
-                            // Re-inisialisasi
-                            const newContainer = document.getElementById('filter-prodi-container');
-                            prodiOptions.forEach(opt => {
-                                const chip = createChip(opt.label, opt.val, 'filter-prodi');
-                                newContainer.appendChild(chip);
-                            });
-                            newContainer.addEventListener('change', fetchMaterials);
-                        }
+                        if(prodiFilterWrapper) prodiFilterWrapper.classList.remove('hidden');
+                        if(sesiFilterWrapper) sesiFilterWrapper.classList.remove('hidden');
+
+                        document.getElementById('page-title').innerText = "Dashboard Dosen";
+                        document.getElementById('page-desc').innerText = "Kelola materi Anda.";
                     } else {
-                        // Mahasiswa: Tampilkan Chips Sesi untuk Filter
-                        document.getElementById('action-add-container').classList.remove('hidden');
-                        document.getElementById('action-add-container').style.display = 'flex'; // Munculkan tombol tambah sesuai permintaan
-                        
-                        const filterBar = document.querySelector('.filter-bar');
-                        if(!document.getElementById('filter-sesi-container')) {
-                            const sesiDiv = document.createElement('div');
-                            sesiDiv.className = 'form-group';
-                            sesiDiv.style.margin = '0';
-                            sesiDiv.innerHTML = `<label>Sesi Belajar</label><div id="filter-sesi-container" class="multi-select-container"></div>`;
-                            // Sisipkan sebelum Bab
-                            const babInput = document.getElementById('filter-bab');
-                            babInput.parentNode.insertBefore(sesiDiv, babInput);
-                            // Re-inisialisasi
-                            const newContainer = document.getElementById('filter-sesi-container');
-                            sesiOptions.forEach(opt => {
-                                const chip = createChip(opt.label, opt.val, 'filter-sesi');
-                                newContainer.appendChild(chip);
-                            });
-                            newContainer.addEventListener('click', fetchMaterials);
-                        }
+                        // MAHASISWA: KUNCI tombol tambah, KUNCI Prodi, HILANGKAN Sesi
+                        if(addBtnContainer) addBtnContainer.classList.add('hidden');
+                        if(addBtnContainer) addBtnContainer.style.display = 'none';
 
-                        // Atur Judul sesuai DB
-                        if(currentUser.sesi && currentUser.sesi.toLowerCase().includes('pagi')) {
-                            document.getElementById('page-title').innerText = "Dashboard Sesi Pagi";
-                            document.getElementById('page-desc').innerText = `Selamat datang, ${currentUser.nama_lengkap}. Materi ditampilkan khusus untuk sesi pagi.`;
-                        } else if (currentUser.sesi && currentUser.sesi.toLowerCase().includes('malam')) {
-                            document.getElementById('page-title').innerText = "Dashboard Sesi Malam";
-                            document.getElementById('page-desc').innerText = `Selamat malam, ${currentUser.nama_lengkap}. Materi ditampilkan khusus untuk sesi malam.`;
-                        }
+                        if(prodiFilterWrapper) prodiFilterWrapper.classList.add('hidden');
+                        // Pastikan filter sesi tetap hidden
+                        if(sesiFilterWrapper) sesiFilterWrapper.classList.add('hidden');
+
+                        document.getElementById('page-title').innerText = `Dashboard Mahasiswa`;
+                        document.getElementById('page-desc').innerText = `Halo ${currentUser.nama_lengkap}.`;
                     }
-
-                    showToast('Login Berhasil!', 'success');
+                    
                     fetchMaterials();
+                    showToast('Login Berhasil!', 'success');
                 } else {
                     showToast(result.message, 'error');
                 }
@@ -661,7 +530,7 @@
             }
         }
 
-        // --- RESET PASSWORD LOGIC ---
+        // --- RESET PASSWORD ---
         function openResetModal() {
             document.getElementById('modal-reset').classList.remove('hidden');
         }
@@ -671,12 +540,7 @@
             const username = document.getElementById('reset-username').value;
             const oldPass = document.getElementById('reset-old-pass').value;
             const newPass = document.getElementById('reset-new-pass').value;
-
-            if(oldPass === newPass) {
-                showToast('Kata sandi baru tidak boleh sama dengan yang lama!', 'error');
-                return;
-            }
-
+            if(oldPass === newPass) { showToast('Sandi sama', 'error'); return; }
             try {
                 const response = await fetch('api/reset_password.php', {
                     method: 'POST',
@@ -684,42 +548,41 @@
                     body: JSON.stringify({ username: username, old_password: oldPass, new_password: newPass })
                 });
                 const result = await response.json();
-
                 if (result.status === 'success') {
                     showToast(result.message, 'success');
                     closeModal('modal-reset');
-                    document.getElementById('reset-username').value = '';
-                    document.getElementById('reset-old-pass').value = '';
-                    document.getElementById('reset-new-pass').value = '';
-                } else {
-                    showToast(result.message, 'error');
-                }
-            } catch (error) {
-                showToast('Gagal menghubungi server', 'error');
-            }
+                } else { showToast(result.message, 'error'); }
+            } catch (error) { showToast('Gagal', 'error'); }
         }
 
         // --- MATERIAL LOGIC ---
         async function fetchMaterials() {
-            const prodi = getSelectedValues('filter-prodi-container');
+            // 1. Ambil Value dari UI
+            let prodi = getSelectedValues('filter-prodi-container');
             const sesi = getSelectedValues('filter-sesi-container');
             const sem = document.getElementById('filter-semester').value;
             const bab = document.getElementById('filter-bab').value;
             const sub = document.getElementById('filter-subbab').value;
+            
+            let url = `api/materi.php?action=get&semester=${sem}&bab=${encodeURIComponent(bab)}&sub=${encodeURIComponent(sub)}`;
 
-            let url = `api/materi.php?action=get&prodi=${prodi}&semester=${sem}&bab=${encodeURIComponent(bab)}&sub=${encodeURIComponent(sub)}`;
-
-            // --- LOGIKA FILTER SESI KHUSUS MAHASISWA ---
+            // --- LOGIKA FILTER OTOMATIS ---
             if (currentUser && currentUser.role === 'mahasiswa') {
-                // Kirim parameter sesi yang ada di profil user ke PHP
-                // Jika DB user 'Pagi', maka PHP filter materi WHERE sesi='Pagi'
-                url += `&sesi=${encodeURIComponent(currentUser.sesi || '')}`; 
+                // Mahasiswa: Paksa Prodi = Prodi DB, Paksa Sesi = Sesi DB
+                const userProdi = currentUser.prodi || '';
+                const userSesi = currentUser.sesi || '';
+                
+                if (userProdi) url += `&prodi=${encodeURIComponent(userProdi)}`;
+                if (userSesi) url += `&sesi=${encodeURIComponent(userSesi)}`;
+            } else {
+                // Dosen: Ikuti UI
+                if (prodi) url += `&prodi=${encodeURIComponent(prodi)}`;
+                if (sesi) url += `&sesi=${encodeURIComponent(sesi)}`;
             }
-            // Logika Dosen: Jangan kirim sesi filter (lihat semua sesi)
-            // Logika Dosen: Kirim Author Filter
 
             try {
                 const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
                 const data = await res.json();
                 renderMaterials(data);
             } catch (err) {
@@ -733,7 +596,7 @@
             list.innerHTML = '';
 
             if(data.length === 0) {
-                list.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:gray;">Tidak ada materi yang cocok.</p>';
+                list.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:gray;">Tidak ada materi.</p>';
                 return;
             }
 
@@ -742,55 +605,56 @@
                 card.className = 'material-card';
                 card.style.animationDelay = `${index * 0.1}s`;
 
+                // --- FIX ERROR NULL (SAFETY CHECK) ---
+                const prodi = m.prodi || ''; 
+                const semester = m.semester || '';
+                const sesi = m.sesi || '';
+                const bab = m.bab || '';
+                const subbab = m.subbab || '';
+                const file = m.file_url || '';
+                const author = m.author_name || '';
+
                 let actions = `
-                    <a href="${m.file_url}" target="_blank" class="btn btn-primary" style="text-decoration:none; font-size:0.85rem;">Unduh Materi</a>
+                    <a href="${file}" target="_blank" class="btn btn-primary" style="text-decoration:none; font-size:0.85rem;">Unduh Materi</a>
                 `;
                 
-                // Tombol Edit/Hapus untuk Dosen & Mahasiswa (Karena tombol Tambah muncul)
                 if (currentUser.role === 'dosen') {
                     actions = `
                         <div style="display:flex; gap:8px;">
-                            <button onclick="editMaterial(${m.id}, '${m.prodi}', '${m.semester}', '${m.sesi}', '${m.bab.replace(/'/g, "\\'")}', '${m.subbab.replace(/'/g, "\\'")}', '${m.file_url}')" class="btn btn-secondary" style="padding: 6px 12px; font-size:0.8rem;">Edit</button>
+                            <button onclick="editMaterial(${m.id}, '${prodi}', '${semester}', '${sesi}', '${bab.replace(/'/g, "\\'")}', '${subbab.replace(/'/g, "\\'")}', '${file}')" class="btn btn-secondary" style="padding: 6px 12px; font-size:0.8rem;">Edit</button>
                             <button onclick="deleteMaterial(${m.id})" class="btn btn-danger" style="padding: 6px 12px; font-size:0.8rem;">Hapus</button>
                         </div>
-                        <a href="${m.file_url}" target="_blank" class="btn btn-primary" style="text-decoration:none; font-size:0.85rem;">Unduh</a>
-                    `;
-                } else if (currentUser.role === 'mahasiswa') {
-                    // Mahasiswa juga bisa Edit? Umumnya tidak, tapi permintaan "kurang sejajar" bisa berarti tombol Tambah kembali muncul.
-                    // Saya buat tombol Edit/Hapus muncul untuk Mahasiswa juga sesuai nuansa "Kurang Sejajar" (Sama Rata).
-                    actions = `
-                        <div style="display:flex; gap:8px;">
-                            <button onclick="editMaterial(${m.id}, '${m.prodi}', '${m.semester}', '${m.sesi}', '${m.bab.replace(/'/g, "\\'")}', '${m.subbab.replace(/'/g, "\\'")}', '${m.file_url}')" class="btn btn-secondary" style="padding: 6px 12px; font-size:0.8rem;">Edit</button>
-                            <button onclick="deleteMaterial(${m.id})" class="btn btn-danger" style="padding: 6px 12px; font-size:0.8rem;">Hapus</button>
-                        </div>
-                        <a href="${m.file_url}" target="_blank" class="btn btn-primary" style="text-decoration:none; font-size:0.85rem;">Unduh</a>
+                        <a href="${file}" target="_blank" class="btn btn-primary" style="text-decoration:none; font-size:0.85rem;">Unduh</a>
                     `;
                 }
 
+                // FIX: Hilangkan logika "Campuran", tampilkan langsung nama prodi
+                // FIX: Sesi sesuaikan dengan DB (Pagi/Malam)
+                
+                let sesiBadge = '';
+                if(sesi.includes('Pagi')) sesiBadge += `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; background:#fef3c7; color:#d97706;">Pagi</span>`;
+                if(sesi.includes('Malam')) sesiBadge += `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; background:#f1f5f9; color:#475569;">Malam</span>`;
+
                 card.innerHTML = `
                     <div style="display:flex; gap:8px; margin-bottom:15px; flex-wrap:wrap;">
-                        ${m.prodi.includes(',') ? `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#fca5a5; color:#fff;">Campuran</span>` : `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#dbeafe; color:#1e40af;">${m.prodi}</span>`}
-                        <span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#f3e8ff; color:#6b21a8;">Sem ${m.semester}</span>
-                        <!-- Badge Sesi Belajar (Tanpa teks "Pagi/Malam" di frontend, tapi menunjukkan warna berbeda) -->
-                        ${m.sesi.includes('Pagi') ? `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; background:#fef3c7; color:#d97706;">Pagi</span>` : ''}
-                        ${m.sesi.includes('Malam') ? `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; background:#f1f5f9; color:#475569;">Malam</span>` : ''}
+                        <span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#dbeafe; color:#1e40af;">${prodi}</span>
+                        <span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#f3e8ff; color:#6b21a8;">Sem ${semester}</span>
+                        ${sesiBadge}
                     </div>
-                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:8px; color:var(--accent);">${m.bab}: ${m.subbab}</h4>
-                    <div style="font-size:0.9rem; color:var(--secondary); margin-bottom:20px;">Oleh: ${m.author_name}</div>
+                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:8px; color:var(--accent);">${bab}: ${subbab}</h4>
+                    <div style="font-size:0.9rem; color:var(--secondary); margin-bottom:20px;">Oleh: ${author}</div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding-top:15px; border-top:1px solid #f1f5f9;">${actions}</div>
                 `;
                 list.appendChild(card);
             });
         }
 
-        // --- CRUD MATERI ---
+        // --- CRUD ---
         function openMaterialModal(isEdit = false) {
             if (!isEdit) {
                 document.getElementById('modal-material-title').innerText = 'Tambah Materi';
                 document.getElementById('mat-id').value = '';
-                // Reset Chips
-                document.querySelectorAll('.mat-prodi .select-chip').forEach(c => c.classList.remove('active'));
-                document.querySelectorAll('.mat-sesi .select-chip').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.multi-select-container .select-chip').forEach(c => c.classList.remove('active'));
                 document.getElementById('mat-semester').value = '1';
                 document.getElementById('mat-bab').value = '';
                 document.getElementById('mat-subbab').value = '';
@@ -799,6 +663,7 @@
             document.getElementById('modal-material').classList.remove('hidden');
         }
 
+        // FIX: Memperbaiki fungsi Edit agar dapat membaca string koma menjadi chip aktif
         function editMaterial(id, prodi, sem, sesi, bab, sub, file) {
             openMaterialModal(true);
             document.getElementById('modal-material-title').innerText = 'Edit Materi';
@@ -808,16 +673,31 @@
             document.getElementById('mat-file').value = file;
             document.getElementById('mat-semester').value = sem;
 
-            // Set Chips State (Split string koma)
-            const prodiOpts = document.getElementById('mat-prodi-container').querySelectorAll('.select-chip');
-            prodiOpts.forEach(c => {
-                if(prodi.includes(c.dataset.value)) c.classList.add('active');
-            });
+            // Reset chips first
+            document.getElementById('mat-prodi-container').querySelectorAll('.select-chip').forEach(c => c.classList.remove('active'));
+            document.getElementById('mat-sesi-container').querySelectorAll('.select-chip').forEach(c => c.classList.remove('active'));
 
-            const sesiOpts = document.getElementById('mat-sesi-container').querySelectorAll('.select-chip');
-            sesiOpts.forEach(c => {
-                if(sesi.includes(c.dataset.value)) c.classList.add('active');
-            });
+            // Set Prodi Chips
+            if(prodi) {
+                const prodiArr = prodi.split(',');
+                const prodiOpts = document.getElementById('mat-prodi-container').querySelectorAll('.select-chip');
+                prodiOpts.forEach(chip => {
+                    if(prodiArr.includes(chip.dataset.val)) {
+                        chip.classList.add('active');
+                    }
+                });
+            }
+
+            // Set Sesi Chips
+            if(sesi) {
+                const sesiArr = sesi.split(',');
+                const sesiOpts = document.getElementById('mat-sesi-container').querySelectorAll('.select-chip');
+                sesiOpts.forEach(chip => {
+                    if(sesiArr.includes(chip.dataset.val)) {
+                        chip.classList.add('active');
+                    }
+                });
+            }
         }
 
         async function handleMaterialSubmit(e) {
@@ -825,7 +705,6 @@
             const id = document.getElementById('mat-id').value;
             const action = id ? 'edit' : 'add';
             
-            // Ambil Value
             const prodiString = getSelectedValues('mat-prodi-container');
             const sesiString = getSelectedValues('mat-sesi-container');
             const semesterInt = document.getElementById('mat-semester').value;
@@ -840,9 +719,7 @@
                 author: currentUser.nama_lengkap,
                 id: id
             };
-
-            // --- DEBUGGING: Cek data di Console Browser ---
-            console.log("Data yang akan dikirim:", payload);
+            console.log("Data:", payload);
 
             try {
                 const res = await fetch(`api/materi.php?action=${action}`, {
@@ -851,61 +728,68 @@
                     body: JSON.stringify(payload)
                 });
                 const result = await res.json();
-
-                // Debugging respons PHP
-                console.log("Respon dari PHP:", result);
+                console.log("Respon:", result);
                 
                 if(result.status === 'success') {
                     showToast('Data berhasil disimpan', 'success');
                     closeModal('modal-material');
-                    
-                    // Reset Filter
-                    document.querySelectorAll('.multi-select-container .select-chip').forEach(c => c.classList.remove('active'));
-                    document.getElementById('filter-semester').value = ''; 
-                    document.getElementById('filter-bab').value = '';
-                    document.getElementById('filter-subbab').value = '';
-
+                    // Reset form slightly differently to avoid flicker
+                    if(!id) {
+                        document.querySelectorAll('.multi-select-container .select-chip').forEach(c => c.classList.remove('active'));
+                        document.getElementById('mat-semester').value = '1';
+                        document.getElementById('mat-bab').value = '';
+                        document.getElementById('mat-subbab').value = '';
+                        document.getElementById('mat-file').value = '';
+                    }
                     fetchMaterials();
-                } else {
-                    // Tampilkan pesan error PHP spesifik
-                    showToast('Gagal: ' + (result.message || 'Error tidak diketahui'), 'error');
-                }
+                } else { showToast('Gagal: ' + result.message, 'error'); }
             } catch (err) {
-                console.error("Jaringan Error:", err);
-                showToast('Gagal menyimpan (Jaringan)', 'error');
+                console.error(err);
+                showToast('Gagal menyimpan', 'error');
             }
         }
+
+        // FIX: Memperbaiki Hapus Materi (Tambahkan author)
         async function deleteMaterial(id) {
             if(!confirm('Hapus materi ini?')) return;
+            // Kirim author agar validasi di backend berhasil
             await fetch('api/materi.php?action=delete', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ id: id, author: currentUser.nama_lengkap })
             });
             fetchMaterials();
             showToast('Data dihapus', 'success');
         }
 
-        // --- PROFILE LOGIC ---
-        function openMaterialModal(isEdit = false) {
-            if (!isEdit) {
-                document.getElementById('modal-material-title').innerText = 'Tambah Materi';
-                document.getElementById('mat-id').value = '';
-                
-                // --- PERBAIKAN BUG RESET CHIP ---
-                // Kita menggunakan classList.remove('active'), BUKAN opt.selected = false
-                const chipsProdi = document.getElementById('mat-prodi-container').querySelectorAll('.select-chip');
-                chipsProdi.forEach(c => c.classList.remove('active'));
-
-                const chipsSesi = document.getElementById('mat-sesi-container').querySelectorAll('.select-chip');
-                chipsSesi.forEach(c => c.classList.remove('active'));
-
-                document.getElementById('mat-semester').value = '1';
-                document.getElementById('mat-bab').value = '';
-                document.getElementById('mat-subbab').value = '';
-                document.getElementById('mat-file').value = '';
-            }
-            document.getElementById('modal-material').classList.remove('hidden');
+        // --- PROFILE ---
+        async function openProfileModal() {
+            document.getElementById('modal-profile').classList.remove('hidden');
+            try {
+                const response = await fetch(`api/profil.php?action=get&user_id=${currentUser.id}`);
+                const res = await response.json();
+                if(res.status === 'success' && res.data) {
+                    const d = res.data;
+                    document.getElementById('p-nama').innerText = d.nama_lengkap;
+                    document.getElementById('p-id').innerText = d.username;
+                    document.getElementById('p-instansi').innerText = d.nama_institusi || '-';
+                    document.getElementById('modal-avatar').src = d.avatar_url || 'https://picsum.photos/seed/user/200/200.jpg';
+                    if (d.role === 'mahasiswa') {
+                        document.getElementById('row-sesi').style.display = 'flex';
+                        document.getElementById('row-prodi').style.display = 'flex';
+                        document.getElementById('row-dosen').style.display = 'flex';
+                        document.getElementById('p-sesi').innerText = d.sesi_belajar || '-';
+                        document.getElementById('p-sesi').setAttribute('contenteditable', 'false');
+                        document.getElementById('p-prodi').innerText = d.prodi || '-';
+                        document.getElementById('p-prodi').setAttribute('contenteditable', 'false');
+                        document.getElementById('p-dosen').innerText = d.pembimbing_akademik || '-';
+                    } else {
+                        document.getElementById('row-sesi').style.display = 'none';
+                        document.getElementById('row-prodi').style.display = 'none';
+                        document.getElementById('row-dosen').style.display = 'none';
+                    }
+                }
+            } catch (error) { console.error(error); }
         }
 
         function changeAvatar(input) {
@@ -922,40 +806,38 @@
         }
 
         async function saveProfile() {
-            // Untuk Mahasiswa, data sesi diambil dari UI (Tapi seharusnya locked)
             const namaBaru = document.getElementById('p-nama').innerText;
-            const prodiBaru = document.getElementById('p-prodi').innerText;
-            
+            // Ambil prodi dari UI, tapi jika Mahasiswa, paksa kembali ke DB
+            let prodiBaru = document.getElementById('p-prodi').innerText;
+            if (currentUser && currentUser.role === 'mahasiswa') {
+                prodiBaru = currentUser.prodi; // Paksa kembali
+            }
             const payload = {
                 user_id: currentUser.id,
                 nama: namaBaru,
-                prodi: prodiBaru === '-' ? currentUser.prodi : prodiBaru,
+                prodi: prodiBaru,
                 avatar: document.getElementById('modal-avatar').src,
                 institusi: document.getElementById('p-instansi').innerText,
-                sesi: document.getElementById('p-sesi').innerText, // Ambil value (yang seharusnya sesuai DB)
+                sesi: document.getElementById('p-sesi').innerText,
                 pembimbing: document.getElementById('p-dosen').innerText
             };
-
             try {
                 const response = await fetch('api/profil.php?action=update', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                
                 const result = await response.json();
-                
                 if (result.status === 'success') {
                     showToast('Profil berhasil diperbarui', 'success');
                     closeModal('modal-profile');
                     document.getElementById('nav-name').innerText = namaBaru;
                     document.getElementById('nav-avatar').src = payload.avatar;
-                } else {
-                    showToast('Gagal: ' + result.message, 'error');
-                }
-            } catch (error) {
-                showToast('Terjadi kesalahan koneksi', 'error');
-            }
+                    if(currentUser.role === 'mahasiswa') {
+                        currentUser.prodi = prodiBaru;
+                    }
+                } else { showToast('Gagal: ' + result.message, 'error'); }
+            } catch (error) { showToast('Koneksi Error', 'error'); }
         }
 
         function closeModal(modalId) {
