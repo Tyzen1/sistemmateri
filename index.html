@@ -22,7 +22,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; -webkit-tap-highlight-color: transparent; }
-        
+
         body {
             background: var(--bg);
             color: var(--accent);
@@ -67,10 +67,10 @@
             transition: all 0.3s ease;
             background: var(--white);
         }
-        .form-control:focus { 
-            outline: none; 
-            border-color: var(--primary); 
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); 
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
             transform: translateY(-2px);
             background: #fff;
         }
@@ -96,7 +96,7 @@
         .dashboard-wrapper { display: flex; flex-direction: column; min-height: 100vh; background: #f1f5f9; }
         .navbar { background: white; padding: 15px 30px; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .main-content { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; flex: 1; }
-        
+
         .section-about { background: white; padding: 30px; border-radius: 24px; margin-bottom: 40px; border-left: 6px solid var(--success); box-shadow: var(--shadow-sm); animation: fadeInUp 0.8s 0.2s forwards; opacity: 0; }
         .filter-bar { background: white; padding: 25px; border-radius: 24px; margin-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; box-shadow: var(--shadow-sm); animation: fadeInUp 0.8s 0.3s forwards; opacity: 0; }
         .material-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
@@ -213,7 +213,7 @@
                 </div>
             </div>
             <div class="nav-right" style="display: flex; gap: 15px; align-items: center;">
-                <button class="btn btn-outline" onclick="alert('Contact')">Contact Us</button>
+                <button class="btn btn-outline" onclick="alert('+62-345-6789-9012')">Contact Us</button>
                 <button class="btn btn-danger" onclick="window.location.reload()">Logout</button>
             </div>
         </header>
@@ -254,16 +254,16 @@
                     </select>
                 </div>
 
-                <!-- 4. FITUR PENCARI BAB (Fixed) -->
+                <!-- 4. FITUR PENCARI MATKUL (Updated) -->
                 <div class="form-group" style="margin:0;">
-                    <label>Bab</label>
-                    <input type="text" id="filter-bab" class="form-control" placeholder="Ketik Bab..." onkeyup="fetchMaterials()">
+                    <label>MatKul</label>
+                    <input type="text" id="filter-bab" class="form-control" placeholder="Cari Nama MatKul..." onkeyup="fetchMaterials()">
                 </div>
 
-                <!-- 5. FITUR PENCARI SUB-BAB (Fixed) -->
+                <!-- 5. FITUR PENCARI JUDUL (Updated) -->
                 <div class="form-group" style="margin:0;">
-                    <label>Sub-bab</label>
-                    <input type="text" id="filter-subbab" class="form-control" placeholder="Cari judul..." onkeyup="fetchMaterials()">
+                    <label>Judul</label>
+                    <input type="text" id="filter-subbab" class="form-control" placeholder="Cari Judul Materi..." onkeyup="fetchMaterials()">
                 </div>
 
                 <!-- 6. TOMBOL TAMBAH (Fixed) -->
@@ -352,13 +352,14 @@
                         <option value="8">Semester 8</option>
                     </select>
                 </div>
+                <!-- Updated Labels -->
                 <div class="form-group">
-                    <label>Bab</label>
-                    <input type="text" id="mat-bab" class="form-control" placeholder="Contoh: Bab 1" required>
+                    <label>MatKul</label>
+                    <input type="text" id="mat-bab" class="form-control" placeholder="Contoh: Pemrograman Web" required>
                 </div>
                 <div class="form-group">
-                    <label>Judul / Sub-bab</label>
-                    <input type="text" id="mat-subbab" class="form-control" placeholder="Contoh: Algoritma" required>
+                    <label>Judul Materi</label>
+                    <input type="text" id="mat-subbab" class="form-control" placeholder="Contoh: Dasar HTML & CSS" required>
                 </div>
                 <div class="form-group">
                     <label>Link File (URL)</label>
@@ -372,7 +373,7 @@
     <script>
         let currentUser = null;
         let currentRole = 'mahasiswa';
-        
+
         const prodiOptions = [
             { val: 'Informatika', label: 'Informatika' },
             { val: 'Sistem Informasi', label: 'Sistem Informasi' },
@@ -383,14 +384,11 @@
             { val: 'Malam', label: 'Malam' }
         ];
 
-        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             initChips();
         });
 
-        // --- CHIPS UI ---
         function initChips() {
-            // Filter Prodi
             const filterProdi = document.getElementById('filter-prodi-container');
             if(filterProdi) {
                 prodiOptions.forEach(opt => {
@@ -398,7 +396,6 @@
                     filterProdi.appendChild(chip);
                 });
             }
-            // Mat Prodi
             const matProdi = document.getElementById('mat-prodi-container');
             if(matProdi) {
                 prodiOptions.forEach(opt => {
@@ -406,7 +403,6 @@
                     matProdi.appendChild(chip);
                 });
             }
-            // Filter Sesi (Default Hidden di HTML)
             const filterSesi = document.getElementById('filter-sesi-container');
             if(filterSesi) {
                 sesiOptions.forEach(opt => {
@@ -414,7 +410,6 @@
                     filterSesi.appendChild(chip);
                 });
             }
-            // Mat Sesi
             const matSesi = document.getElementById('mat-sesi-container');
             if(matSesi) {
                 sesiOptions.forEach(opt => {
@@ -445,7 +440,6 @@
             return Array.from(activeChips).map(c => c.dataset.val).join(',');
         }
 
-        // --- NOTIFICATIONS ---
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -455,14 +449,13 @@
             if(type === 'error') icon = '❌ ';
             toast.innerHTML = `<span>${icon}${message}</span>`;
             container.appendChild(toast);
-            setTimeout(() => { 
-                toast.style.opacity = '0'; 
-                toast.style.transform = 'translateY(-20px)'; 
-                setTimeout(() => toast.remove(), 300); 
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        // --- LOGIN ---
         function switchRole(role) {
             currentRole = role;
             document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
@@ -485,10 +478,10 @@
 
                 if (result.status === 'success') {
                     currentUser = result.data;
-                    
+
                     document.getElementById('auth-view').classList.add('hidden');
                     document.getElementById('dashboard-view').classList.remove('hidden');
-                    
+
                     document.getElementById('nav-name').innerText = currentUser.nama_lengkap;
                     document.getElementById('nav-role').innerText = currentUser.role;
                     document.getElementById('nav-avatar').src = currentUser.avatar;
@@ -498,28 +491,25 @@
                     const sesiFilterWrapper = document.getElementById('filter-sesi-wrapper');
 
                     if (currentUser.role === 'dosen') {
-                        // DOSEN: Buka tombol tambah, Buka Prodi, Buka Sesi
                         if(addBtnContainer) addBtnContainer.classList.remove('hidden');
                         if(addBtnContainer) addBtnContainer.style.display = 'flex';
-                        
+
                         if(prodiFilterWrapper) prodiFilterWrapper.classList.remove('hidden');
                         if(sesiFilterWrapper) sesiFilterWrapper.classList.remove('hidden');
 
                         document.getElementById('page-title').innerText = "Dashboard Dosen";
                         document.getElementById('page-desc').innerText = "Kelola materi Anda.";
                     } else {
-                        // MAHASISWA: KUNCI tombol tambah, KUNCI Prodi, HILANGKAN Sesi
                         if(addBtnContainer) addBtnContainer.classList.add('hidden');
                         if(addBtnContainer) addBtnContainer.style.display = 'none';
 
                         if(prodiFilterWrapper) prodiFilterWrapper.classList.add('hidden');
-                        // Pastikan filter sesi tetap hidden
                         if(sesiFilterWrapper) sesiFilterWrapper.classList.add('hidden');
 
                         document.getElementById('page-title').innerText = `Dashboard Mahasiswa`;
                         document.getElementById('page-desc').innerText = `Halo ${currentUser.nama_lengkap}.`;
                     }
-                    
+
                     fetchMaterials();
                     showToast('Login Berhasil!', 'success');
                 } else {
@@ -530,7 +520,6 @@
             }
         }
 
-        // --- RESET PASSWORD ---
         function openResetModal() {
             document.getElementById('modal-reset').classList.remove('hidden');
         }
@@ -555,27 +544,24 @@
             } catch (error) { showToast('Gagal', 'error'); }
         }
 
-        // --- MATERIAL LOGIC ---
         async function fetchMaterials() {
-            // 1. Ambil Value dari UI
             let prodi = getSelectedValues('filter-prodi-container');
             const sesi = getSelectedValues('filter-sesi-container');
             const sem = document.getElementById('filter-semester').value;
-            const bab = document.getElementById('filter-bab').value;
+            // ID masih filter-bab & filter-subbab untuk kompatibilitas backend, tapi UI sudah MatKul/Judul
+            const bab = document.getElementById('filter-bab').value; 
             const sub = document.getElementById('filter-subbab').value;
-            
+
+            // URL Parameter tetap 'bab' dan 'sub' agar API tidak error
             let url = `api/materi.php?action=get&semester=${sem}&bab=${encodeURIComponent(bab)}&sub=${encodeURIComponent(sub)}`;
 
-            // --- LOGIKA FILTER OTOMATIS ---
             if (currentUser && currentUser.role === 'mahasiswa') {
-                // Mahasiswa: Paksa Prodi = Prodi DB, Paksa Sesi = Sesi DB
                 const userProdi = currentUser.prodi || '';
                 const userSesi = currentUser.sesi || '';
-                
+
                 if (userProdi) url += `&prodi=${encodeURIComponent(userProdi)}`;
                 if (userSesi) url += `&sesi=${encodeURIComponent(userSesi)}`;
             } else {
-                // Dosen: Ikuti UI
                 if (prodi) url += `&prodi=${encodeURIComponent(prodi)}`;
                 if (sesi) url += `&sesi=${encodeURIComponent(sesi)}`;
             }
@@ -605,79 +591,81 @@
                 card.className = 'material-card';
                 card.style.animationDelay = `${index * 0.1}s`;
 
-                // --- FIX ERROR NULL (SAFETY CHECK) ---
-                const prodi = m.prodi || ''; 
+                // Mapping data backend ke variabel lokal dengan nama baru
+                const prodi = m.prodi || '';
                 const semester = m.semester || '';
                 const sesi = m.sesi || '';
-                const bab = m.bab || '';
-                const subbab = m.subbab || '';
+                const matkul = m.bab || ''; // Backend key 'bab' dianggap sebagai 'MatKul'
+                const judul = m.subbab || ''; // Backend key 'subbab' dianggap sebagai 'Judul'
                 const file = m.file_url || '';
                 const author = m.author_name || '';
+
+                let prodiDisplay = prodi;
+                if (currentUser && currentUser.role === 'mahasiswa' && currentUser.prodi) {
+                    prodiDisplay = currentUser.prodi;
+                }
 
                 let actions = `
                     <a href="${file}" target="_blank" class="btn btn-primary" style="text-decoration:none; font-size:0.85rem;">Unduh Materi</a>
                 `;
-                
+
                 if (currentUser.role === 'dosen') {
                     actions = `
                         <div style="display:flex; gap:8px;">
-                            <button onclick="editMaterial(${m.id}, '${prodi}', '${semester}', '${sesi}', '${bab.replace(/'/g, "\\'")}', '${subbab.replace(/'/g, "\\'")}', '${file}')" class="btn btn-secondary" style="padding: 6px 12px; font-size:0.8rem;">Edit</button>
+                            <button onclick="editMaterial(${m.id}, '${prodi}', '${semester}', '${sesi}', '${matkul.replace(/'/g, "\\'")}', '${judul.replace(/'/g, "\\'")}', '${file}')" class="btn btn-secondary" style="padding: 6px 12px; font-size:0.8rem;">Edit</button>
                             <button onclick="deleteMaterial(${m.id})" class="btn btn-danger" style="padding: 6px 12px; font-size:0.8rem;">Hapus</button>
                         </div>
                         <a href="${file}" target="_blank" class="btn btn-primary" style="text-decoration:none; font-size:0.85rem;">Unduh</a>
                     `;
                 }
 
-                // FIX: Hilangkan logika "Campuran", tampilkan langsung nama prodi
-                // FIX: Sesi sesuaikan dengan DB (Pagi/Malam)
-                
                 let sesiBadge = '';
                 if(sesi.includes('Pagi')) sesiBadge += `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; background:#fef3c7; color:#d97706;">Pagi</span>`;
                 if(sesi.includes('Malam')) sesiBadge += `<span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; background:#f1f5f9; color:#475569;">Malam</span>`;
 
+                // Update tampilan card menggunakan nama variabel baru
                 card.innerHTML = `
                     <div style="display:flex; gap:8px; margin-bottom:15px; flex-wrap:wrap;">
-                        <span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#dbeafe; color:#1e40af;">${prodi}</span>
+                        <span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#dbeafe; color:#1e40af;">${prodiDisplay}</span>
                         <span style="font-size:0.75rem; padding:4px 10px; border-radius:6px; font-weight:700; text-transform:uppercase; background:#f3e8ff; color:#6b21a8;">Sem ${semester}</span>
                         ${sesiBadge}
                     </div>
-                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:8px; color:var(--accent);">${bab}: ${subbab}</h4>
-                    <div style="font-size:0.9rem; color:var(--secondary); margin-bottom:20px;">Oleh: ${author}</div>
+                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:5px; color:var(--accent);">${matkul}</h4>
+                    <div style="font-size:1rem; font-weight:600; color:var(--primary); margin-bottom:10px;">${judul}</div>
+                    <div style="font-size:0.85rem; color:var(--secondary); margin-bottom:20px;">Oleh: ${author}</div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding-top:15px; border-top:1px solid #f1f5f9;">${actions}</div>
                 `;
                 list.appendChild(card);
             });
         }
 
-        // --- CRUD ---
         function openMaterialModal(isEdit = false) {
             if (!isEdit) {
                 document.getElementById('modal-material-title').innerText = 'Tambah Materi';
                 document.getElementById('mat-id').value = '';
                 document.querySelectorAll('.multi-select-container .select-chip').forEach(c => c.classList.remove('active'));
                 document.getElementById('mat-semester').value = '1';
-                document.getElementById('mat-bab').value = '';
-                document.getElementById('mat-subbab').value = '';
+                document.getElementById('mat-bab').value = ''; // Input ID masih 'mat-bab'
+                document.getElementById('mat-subbab').value = ''; // Input ID masih 'mat-subbab'
                 document.getElementById('mat-file').value = '';
             }
             document.getElementById('modal-material').classList.remove('hidden');
         }
 
-        // FIX: Memperbaiki fungsi Edit agar dapat membaca string koma menjadi chip aktif
-        function editMaterial(id, prodi, sem, sesi, bab, sub, file) {
+        function editMaterial(id, prodi, sem, sesi, matkul, judul, file) {
             openMaterialModal(true);
             document.getElementById('modal-material-title').innerText = 'Edit Materi';
             document.getElementById('mat-id').value = id;
-            document.getElementById('mat-bab').value = bab;
-            document.getElementById('mat-subbab').value = sub;
+            
+            // Mengisi nilai ke input field berdasarkan ID
+            document.getElementById('mat-bab').value = matkul;
+            document.getElementById('mat-subbab').value = judul;
             document.getElementById('mat-file').value = file;
             document.getElementById('mat-semester').value = sem;
 
-            // Reset chips first
             document.getElementById('mat-prodi-container').querySelectorAll('.select-chip').forEach(c => c.classList.remove('active'));
             document.getElementById('mat-sesi-container').querySelectorAll('.select-chip').forEach(c => c.classList.remove('active'));
 
-            // Set Prodi Chips
             if(prodi) {
                 const prodiArr = prodi.split(',');
                 const prodiOpts = document.getElementById('mat-prodi-container').querySelectorAll('.select-chip');
@@ -688,7 +676,6 @@
                 });
             }
 
-            // Set Sesi Chips
             if(sesi) {
                 const sesiArr = sesi.split(',');
                 const sesiOpts = document.getElementById('mat-sesi-container').querySelectorAll('.select-chip');
@@ -704,22 +691,22 @@
             e.preventDefault();
             const id = document.getElementById('mat-id').value;
             const action = id ? 'edit' : 'add';
-            
+
             const prodiString = getSelectedValues('mat-prodi-container');
             const sesiString = getSelectedValues('mat-sesi-container');
             const semesterInt = document.getElementById('mat-semester').value;
-            
+
+            // Payload keys tetap 'bab' dan 'subbab' agar database backend menerima data dengan benar
             const payload = {
                 prodi: prodiString,
                 semester: semesterInt,
                 sesi: sesiString,
-                bab: document.getElementById('mat-bab').value,
-                subbab: document.getElementById('mat-subbab').value,
+                bab: document.getElementById('mat-bab').value, // Ambil value dari input MatKul
+                subbab: document.getElementById('mat-subbab').value, // Ambil value dari input Judul
                 file: document.getElementById('mat-file').value,
                 author: currentUser.nama_lengkap,
                 id: id
             };
-            console.log("Data:", payload);
 
             try {
                 const res = await fetch(`api/materi.php?action=${action}`, {
@@ -728,12 +715,10 @@
                     body: JSON.stringify(payload)
                 });
                 const result = await res.json();
-                console.log("Respon:", result);
-                
+
                 if(result.status === 'success') {
                     showToast('Data berhasil disimpan', 'success');
                     closeModal('modal-material');
-                    // Reset form slightly differently to avoid flicker
                     if(!id) {
                         document.querySelectorAll('.multi-select-container .select-chip').forEach(c => c.classList.remove('active'));
                         document.getElementById('mat-semester').value = '1';
@@ -749,10 +734,8 @@
             }
         }
 
-        // FIX: Memperbaiki Hapus Materi (Tambahkan author)
         async function deleteMaterial(id) {
             if(!confirm('Hapus materi ini?')) return;
-            // Kirim author agar validasi di backend berhasil
             await fetch('api/materi.php?action=delete', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -762,7 +745,6 @@
             showToast('Data dihapus', 'success');
         }
 
-        // --- PROFILE ---
         async function openProfileModal() {
             document.getElementById('modal-profile').classList.remove('hidden');
             try {
@@ -807,10 +789,9 @@
 
         async function saveProfile() {
             const namaBaru = document.getElementById('p-nama').innerText;
-            // Ambil prodi dari UI, tapi jika Mahasiswa, paksa kembali ke DB
             let prodiBaru = document.getElementById('p-prodi').innerText;
             if (currentUser && currentUser.role === 'mahasiswa') {
-                prodiBaru = currentUser.prodi; // Paksa kembali
+                prodiBaru = currentUser.prodi;
             }
             const payload = {
                 user_id: currentUser.id,
